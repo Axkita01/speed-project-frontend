@@ -10,7 +10,13 @@ const socket = io ('http://localhost:5000')
 
 export default function App() {
   const [message, changeMessage] = useState('')
+  const [deck, changeDeck] = useState('')
 
+  socket.on('reset', function reset (res) {
+
+    changeDeck(res)
+    console.log(deck)
+  })
   socket.on('response', function respond (res) {
     changeMessage(res)
   })
@@ -25,7 +31,10 @@ export default function App() {
       <button onClick = {() => {socket.emit('push')}}>
         Push Me!
       </button>
-      <Card color = 'red' number = '9' suit = 'jack' socket = {socket}></Card>
+      <Card color = 'red' number = '9' socket = {socket}></Card>
+      <button onClick = {() => {socket.emit('reset')}}>
+        test reset
+      </button>
       {message}
       <StatusBar style="auto" />
     </View>

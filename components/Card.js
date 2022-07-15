@@ -5,7 +5,6 @@ export default function Card (props) {
         <div>
             <button onClick = {() => {props.socket.emit('card', props.number)}}>
                 {props.number}<br/>
-                {props.suit}<br/>
                 {props.color}<br/>
             </button>
         </div>

@@ -1,22 +1,29 @@
-import {StyleSheet, Button} from "react-native"
+import {Button, View, StyleSheet, TouchableOpacity, Text} from "react-native"
 
 export default function Card (props) {
+    const hex_color = props.color === 'black' ? '#000': '#F00'
     return (
-            <Button
-            color = '#fff' 
-            onClick = {() => {props.socket.emit('card', props.number)}}
-            style = {styles.container}
-            title = {props.color + ' ' + props.number}
-            />
+        <View style = {styles.card}>
+            <TouchableOpacity
+            color = {'#FFF' ? props.color == 'black': '#FFF'} 
+            onPress = {() => {props.socket.emit('card', props.number)}}
+            style = {{
+                backgroundColor: '#FFF', 
+                color: hex_color,
+                height: '12vh',
+                width: '7vw'
+            }}
+            >
+                <Text>{props.color + ' ' + props.number}</Text>
+            </TouchableOpacity>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      color: '#fff',
-      borderStyle: 'solid',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
+    card: {
+        borderStyle: 'solid',
+        borderWidth: '.2vw',
+    }
+
+})

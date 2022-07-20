@@ -5,13 +5,13 @@ export default function Card (props) {
     return (
         <View style = {styles.card}>
             <TouchableOpacity
-            color = {'#FFF' ? props.color == 'black': '#FFF'} 
-            onPress = {() => {props.socket.emit('card', props.number)}}
+            color = {'#FFF' ? props.color == 'black': '#F00'} 
+            onPress = {props.onPress}
             style = {{
                 backgroundColor: '#FFF', 
-                color: hex_color,
-                height: '12vh',
-                width: '7vw'
+                color: '#000',
+                height: '100%',
+                width: '100%'
             }}
             >
                 <Text>{props.color + ' ' + props.number}</Text>
@@ -24,6 +24,9 @@ const styles = StyleSheet.create({
     card: {
         borderStyle: 'solid',
         borderWidth: '.2vw',
+        width: '10vw',
+        height: '15vw',
+        marginRight: '2vw'
     }
 
 })

@@ -11,12 +11,15 @@ const socket = io ('http://localhost:5000')
 export default function App() {
   const [deck, changeDeck] = useState('')
   const [hand, updateHand] = useState([])
-
+  const [selected, selectCard] = useState(null)
+  const [deckTops, setTops] = useState([{color: 'empty', number: 'empty'}, {color: 'empty', number: 'empty'}])
+  /*tops returned as list of 2 cards*/
+  socket.on('tops-change', function tops (res) {
+    setTops([res[0], res[1]])
+  })
 
   socket.on('reset', function reset (res) {
     changeDeck(res)
-
-    
   })
   socket.on('response', function respond (res) {
     changeMessage(res)
@@ -26,16 +29,20 @@ export default function App() {
     console.log(res)
   })
 
+  function placeCard (elements) {
+    socket.emit('place', (elements))
+  }
+
   function handleDraw () {
-    if (deck.length === 0) {
+    if (deck.length === 0 || hand.length === 4) {
       return
     }
     var hand_copy = hand
     var deck_copy = deck
     const card = deck_copy[deck_copy.length -1 ]
-    console.log(card)
     const element = {
                       key: card[2],
+                      idx: hand_copy.length,
                       color: card[1],
                       number: card[0]
                     }
@@ -45,24 +52,44 @@ export default function App() {
     changeDeck(deck_copy)
   }
   
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <Button onPress = {() => {socket.emit('push')}}>
-        Push Me!
-      </Button>
-      <Card color = 'red' number = '9' socket = {socket}></Card>
+      <Text>{selected}</Text>
       <Button onPress = {() => {socket.emit('reset')}} title='test reset'/>
       <Button 
       onPress = {() => {handleDraw()}}
       title = 'draw'
       />
-      <FlatList 
-      data = {hand}
-      renderItem = {function ({ item }) { return (
-         <Card color = {item['color']} number = {item['number']} socket = {socket}/> 
-      )}}
-      />
+      <Card 
+      color = {deckTops[0]['color']} 
+      number = {deckTops[0]['number']}
+      onPress = {
+        () => { if (selected !== null) {
+                placeCard([hand[selected], deckTops[1]]);
+                }    
+                else {
+                  return
+                }   
+                for (var i = selected + 1; i < hand.length; i ++) {
+                  hand[i]['idx'] -= 1
+                }
+                hand.splice(selected, 1);
+                selectCard(null)
+              }
+      }/>
+      <View>
+        <FlatList 
+        data = {hand}
+        horizontal = {true}
+        renderItem = {function ({ item }) { return (
+          <Card 
+            color = {item['color']} 
+            number = {item['number']} 
+            onPress = {() => (selectCard(item['idx']))}/> 
+        )}}
+        />
+      </View>
       <StatusBar style="auto" />
     </View>
   );

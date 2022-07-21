@@ -8,13 +8,16 @@ export default function Card (props) {
             color = {'#FFF' ? props.color == 'black': '#F00'} 
             onPress = {props.onPress}
             style = {{
-                backgroundColor: '#FFF', 
-                color: '#000',
                 height: '100%',
-                width: '100%'
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
             }}
             >
-                <Text>{props.color + ' ' + props.number}</Text>
+                <Text 
+                    style = {{color: hex_color, fontWeight: 'bold', fontSize: '2vw'}}>
+                    {props.number}
+                </Text>
             </TouchableOpacity>
         </View>
     )
@@ -26,7 +29,8 @@ const styles = StyleSheet.create({
         borderWidth: '.2vw',
         width: '10vw',
         height: '15vw',
-        marginRight: '2vw'
+        marginRight: '2vw',
     }
+
 
 })

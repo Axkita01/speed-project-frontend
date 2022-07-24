@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     card: {
         borderStyle: 'solid',
         borderWidth: '.2vw',
+        borderRadius: '2vw',
         width: '20vw',
         height: '30vw',
         marginRight: '2vw',

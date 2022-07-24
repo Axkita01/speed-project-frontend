@@ -15,7 +15,7 @@ export default function Card (props) {
             }}
             >
                 <Text 
-                    style = {{color: hex_color, fontWeight: 'bold', fontSize: '2vw'}}>
+                    style = {{color: hex_color, fontWeight: 'bold', fontSize: '5vw'}}>
                     {props.number}
                 </Text>
             </TouchableOpacity>
@@ -27,9 +27,10 @@ const styles = StyleSheet.create({
     card: {
         borderStyle: 'solid',
         borderWidth: '.2vw',
-        width: '10vw',
-        height: '15vw',
+        width: '20vw',
+        height: '30vw',
         marginRight: '2vw',
+        marginBottom: '1vw'
     }
 
 

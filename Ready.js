@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native-web';
 export default function Ready ({navigation}) {
     return (
         <View style = {styles.container}>
-            <Text>The room is currently full.</Text>
+            <Text>Opponent Joined.</Text>
             <TouchableOpacity style = {styles.button} onPress = {navigation.navigate('home')}>
                 <Text>
                     Return To Home

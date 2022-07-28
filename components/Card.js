@@ -12,6 +12,10 @@ export default function Card (props) {
                 width: '100%',
                 justifyContent: 'center',
                 alignItems: 'center',
+                background: '#AAAAAA',
+                borderRadius: '1vh',
+                borderStyle: 'solid',
+                borderWidth: '.1vw'
             }}
             >
                 <Text 
@@ -25,14 +29,9 @@ export default function Card (props) {
 
 const styles = StyleSheet.create({
     card: {
-        borderStyle: 'solid',
-        borderWidth: '.1vh',
-        borderRadius: '1vh',
-        width: '10vh',
-        height: '15vh',
+        width: '8vh',
+        height: '12vh',
         marginRight: '1vh',
-        marginBottom: '.5vh'
+        marginBottom: '.5vh',
     }
-
-
 })

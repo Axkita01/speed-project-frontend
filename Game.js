@@ -32,32 +32,32 @@ export default function Game({ navigation, route }) {
   const [oppConnected, setOppConnected] = useState(false);
 
   /*tops returned as list of 2 cards*/
-  const nav = navigation
+  const nav = navigation;
   useEffect(
     function () {
       socket.current = route.params.s;
       socket.current.on("connection", function startGame() {
         setOppConnected(true);
-        socket.current.emit("reset")
+        socket.current.emit("reset");
       });
 
-      socket.current.on('rejection', function rejected() {
-        alert('Connection Failed, Room Full')
-        socket.current.disconnect()
-        nav.navigate('home')
-      })
+      socket.current.on("rejection", function rejected() {
+        alert("Connection Failed, Room Full");
+        socket.current.disconnect();
+        nav.navigate("home");
+      });
 
       socket.current.on("disconnection", function stopGame() {
         setOppConnected(false);
-        updateHand([])
-        setOppLength([])
-        setWinner(null)
-        setSides([null, null])
+        updateHand([]);
+        setOppLength([]);
+        setWinner(null);
+        setSides([null, null]);
         setTops([
-                { color: "empty", number: "empty" },
-                { color: "empty", number: "empty" }
-              ])
-        cantPlaceOpp.current = false
+          { color: "empty", number: "empty" },
+          { color: "empty", number: "empty" },
+        ]);
+        cantPlaceOpp.current = false;
       });
       /*resets cant place reference if opponent places card again*/
       socket.current.on("resetplace", function canPlace() {
@@ -180,7 +180,7 @@ export default function Game({ navigation, route }) {
             style={{ marginBottom: ".5vw" }}
             data={oppLength}
             renderItem={function () {
-              return <CardBack />;
+              return <CardBack/>;
             }}
             horizontal={true}
           />
@@ -197,10 +197,11 @@ export default function Game({ navigation, route }) {
         }}
       >
         {sideDecks[0] ? (
-          <Card color="black" number={sideDecks[0].length} />
+          <CardBack/>
         ) : null}
 
         <Card
+          style = {{marginLeft: 0}}
           color={deckTops[0]["color"]}
           number={deckTops[0]["number"]}
           onPress={() => {
@@ -277,10 +278,10 @@ export default function Game({ navigation, route }) {
         />
 
         {sideDecks[0] ? (
-          <Card color="black" number={sideDecks[1].length} />
+          <CardBack />
         ) : null}
       </View>
-
+      
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         {hand.length !== 0 ? (
           <FlatList
@@ -300,7 +301,7 @@ export default function Game({ navigation, route }) {
         ) : (
           <PlaceHolder />
         )}
-
+        {/*Play Again Screen*/}
         <View>
           {deck.length > 0 ? (
             <Card
@@ -321,22 +322,29 @@ export default function Game({ navigation, route }) {
 
   return (
     <View>
-    {win === null ? (oppConnected ? 
-      page: 
-      <View>
-        <Text>
-          Awaiting Player Connection...
-        </Text>
-      </View>): 
-
-      <View>
+      {win === null ? (
+        oppConnected ? (
+          page
+        ) : (
+          <View>
+            <Text>Awaiting Player Connection...</Text>
+          </View>
+        )
+      ) : (
+        <View>
           <Text>{winningString()}</Text>
           <Text>Play Again?</Text>
-          <TouchableOpacity onPress = {() => {socket.current.emit('reset')}}><Text>Press</Text></TouchableOpacity>
-      </View>}
-
+          <TouchableOpacity
+            onPress={() => {
+              socket.current.emit("reset");
+            }}
+          >
+            <Text>Press</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

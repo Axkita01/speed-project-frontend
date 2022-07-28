@@ -3,18 +3,24 @@ import {View, StyleSheet, Image} from "react-native-web"
 export default function CardBack () {
     return (
         <View style = {styles.card}>
-            
+            <Image
+            style = {styles.image}
+            source = {require('../Images/card back.jpg')}/>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     card: {
-        borderStyle: 'solid',
-        borderWidth: '.1vh',
         width: '8vh',
         height: '12vh',
         marginRight: '1vw',
-        borderRadius: '.8vh'
+        
+    },
+
+    image: {
+        height: '100%',
+        width: '100%',
+        borderRadius: '1vw'
     }
 })

@@ -1,4 +1,4 @@
-import {Button, View, StyleSheet, TouchableOpacity, Text} from "react-native"
+import {Button, View, StyleSheet, TouchableOpacity, Text} from "react-native-web"
 
 export default function PlaceHolder () {
     return (
@@ -8,10 +8,10 @@ export default function PlaceHolder () {
 
 const styles = StyleSheet.create({
     card: {
-        width: '20vw',
-        height: '30vw',
-        marginRight: '2vw',
-        marginBottom: '1vw'
+        width: '10vh',
+        height: '15vh',
+        marginRight: '1vh',
+        marginBottom: '.5vh'
     }
 
 

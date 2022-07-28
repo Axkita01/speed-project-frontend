@@ -1,4 +1,4 @@
-import {Button, View, StyleSheet, TouchableOpacity, Text} from "react-native"
+import {Button, View, StyleSheet, TouchableOpacity, Text} from "react-native-web"
 
 export default function Card (props) {
     const hex_color = props.color === 'black' ? '#000': '#F00'
@@ -15,7 +15,7 @@ export default function Card (props) {
             }}
             >
                 <Text 
-                    style = {{color: hex_color, fontWeight: 'bold', fontSize: '5vw'}}>
+                    style = {{color: hex_color, fontWeight: 'bold', fontSize: '2.5vh'}}>
                     {props.number}
                 </Text>
             </TouchableOpacity>
@@ -26,12 +26,12 @@ export default function Card (props) {
 const styles = StyleSheet.create({
     card: {
         borderStyle: 'solid',
-        borderWidth: '.2vw',
-        borderRadius: '2vw',
-        width: '20vw',
-        height: '30vw',
-        marginRight: '2vw',
-        marginBottom: '1vw'
+        borderWidth: '.1vh',
+        borderRadius: '1vh',
+        width: '10vh',
+        height: '15vh',
+        marginRight: '1vh',
+        marginBottom: '.5vh'
     }
 
 

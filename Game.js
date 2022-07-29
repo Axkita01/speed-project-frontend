@@ -22,7 +22,7 @@ export default function Game({ navigation, route }) {
     { color: "empty", number: "empty" },
     { color: "empty", number: "empty" },
   ]);
-  const [sideDecks, setSides] = useState([null, null]);
+  const [sideDecks, setSides] = useState([[], []]);
   const [oppLength, setOppLength] = useState([]);
   const cantPlaceOpp = useRef(false);
   const [win, setWinner] = useState(null);
@@ -52,7 +52,7 @@ export default function Game({ navigation, route }) {
         updateHand([]);
         setOppLength([]);
         setWinner(null);
-        setSides([null, null]);
+        setSides([[], []]);
         setTops([
           { color: "empty", number: "empty" },
           { color: "empty", number: "empty" },
@@ -160,24 +160,16 @@ export default function Game({ navigation, route }) {
                 navigation.navigate("home");
               }}
             >
-              <Text>Exit</Text>
+              <Text style={styles.exit}>Exit</Text>
             </TouchableOpacity>
           ),
         });
       }, [navigation])}
 
-      <Button
-        title={"Cannot Place"}
-        onPress={() => {
-          cantPlace();
-        }}
-      />
-
-      {winningString(win)}
       <View>
         {oppLength.length !== 0 ? (
           <FlatList
-            style={{ marginBottom: ".5vw" }}
+            style={{ marginBottom: ".5vw", marginTop: '3.5vh' }}
             data={oppLength}
             renderItem={function () {
               return <CardBack/>;
@@ -185,7 +177,7 @@ export default function Game({ navigation, route }) {
             horizontal={true}
           />
         ) : (
-          <PlaceHolder />
+          <PlaceHolder style = {{marginTop: '5'}}/>
         )}
       </View>
       {/*Middle Decks*/}
@@ -196,12 +188,10 @@ export default function Game({ navigation, route }) {
           marginTop: "10vh",
         }}
       >
-        {sideDecks[0] ? (
-          <CardBack/>
-        ) : null}
+        {sideDecks[0].length !== 0 ? <CardBack /> : null}
 
         <Card
-          style = {{marginLeft: 0}}
+          style={{ marginLeft: 0 }}
           color={deckTops[0]["color"]}
           number={deckTops[0]["number"]}
           onPress={() => {
@@ -277,16 +267,15 @@ export default function Game({ navigation, route }) {
           }}
         />
 
-        {sideDecks[0] ? (
-          <CardBack />
-        ) : null}
+        {sideDecks[0].length !== 0 ? <CardBack /> : null}
       </View>
-      
+
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         {hand.length !== 0 ? (
           <FlatList
             data={hand}
             horizontal={true}
+            style = {{marginBottom: '2vw'}}
             renderItem={function ({ item }) {
               return (
                 /*ADD PLACEHOLDER WHEN HAND IS ABSENT*/
@@ -301,22 +290,34 @@ export default function Game({ navigation, route }) {
         ) : (
           <PlaceHolder />
         )}
-        {/*Play Again Screen*/}
-        <View>
+
+        <View style = {{flexDirection: 'row', alignItems: 'center'}}>
           {deck.length > 0 ? (
-            <Card
-              color="black"
-              number="deck"
-              onPress={() => {
-                handleDraw();
-              }}
-            />
+            <View>
+              <Card
+                color="black"
+                number="deck"
+                onPress={() => {
+                  handleDraw();
+                }}
+              />
+              <TouchableOpacity />
+            </View>
           ) : (
             <PlaceHolder />
           )}
+
+          {/*Cannot place button*/}
+          <TouchableOpacity
+            onPress={() => {
+              cantPlace();
+            }}
+            style={styles.noPlace}
+          >
+            <Text textAlign = 'center'>Cannot Place</Text>
+          </TouchableOpacity>
         </View>
       </View>
-      <StatusBar style="auto" />
     </View>
   );
 
@@ -332,17 +333,19 @@ export default function Game({ navigation, route }) {
         )
       ) : (
         <View>
-          <Text>{winningString()}</Text>
+          {/*Play Again Screen*/}
+          <Text>{winningString(win)}</Text>
           <Text>Play Again?</Text>
           <TouchableOpacity
             onPress={() => {
               socket.current.emit("reset");
             }}
           >
-            <Text>Press</Text>
+            Cannot Place
           </TouchableOpacity>
         </View>
       )}
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -350,8 +353,27 @@ export default function Game({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    background: "transparent",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  exit: {
+    fontWeight: "bold",
+    color: "white",
+    marginLeft: "1vw",
+  },
+
+  noPlace: {
+    width: "10vh",
+    height: "10vh",
+    borderRadius: '5vh',
+    borderStyle: 'solid',
+    borderWidth: '.1vh',
+    background: "#56C7FF",
+    display: 'flex',
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center'
   },
 });

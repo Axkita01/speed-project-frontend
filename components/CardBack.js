@@ -12,8 +12,8 @@ export default function CardBack () {
 
 const styles = StyleSheet.create({
     card: {
-        width: '8vh',
-        height: '12vh',
+        width: '10vh',
+        height: '15vh',
         marginRight: '1vw',
         
     },
@@ -21,6 +21,6 @@ const styles = StyleSheet.create({
     image: {
         height: '100%',
         width: '100%',
-        borderRadius: '1vw'
+        borderRadius: '1vh'
     }
 })

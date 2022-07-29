@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
         width: '10vh',
         height: '15vh',
         marginRight: '1vh',
-        marginBottom: '.5vh'
     }
 
 

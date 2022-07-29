@@ -29,9 +29,8 @@ export default function Card (props) {
 
 const styles = StyleSheet.create({
     card: {
-        width: '8vh',
-        height: '12vh',
+        width: '10vh',
+        height: '15vh',
         marginRight: '1vh',
-        marginBottom: '.5vh',
     }
 })

@@ -16,6 +16,7 @@ export default function Rules ({ navigation }) {
         <TouchableOpacity
         style = {styles.connect}
         onPress={() => {
+            /*temporary server link*/
             const socket = io('https://speed-project-server.herokuapp.com');
             navigation.navigate('game', {s: socket})}}
           ><Text>Play</Text></TouchableOpacity>

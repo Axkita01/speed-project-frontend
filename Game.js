@@ -91,8 +91,11 @@ export default function Game({ navigation, route }) {
         setWinner(null);
         cantPlaceOpp.current = false;
       });
+      return function unMount () {
+        socket.current.disconnect()
+      }
     },
-    [sideDecks, nav]
+    [] /*sideDecks, nav*/
   );
 
   function placeCard(elements) {
@@ -188,7 +191,8 @@ export default function Game({ navigation, route }) {
           marginTop: "10vh",
         }}
       >
-        {sideDecks[0].length !== 0 ? <CardBack style = {{marginRight: 0}}/> : <PlaceHolder/>}
+        {sideDecks[0].length !== 0 ? <CardBack style = {{marginRight: 0}}/> : 
+        null}
 
         <Card
           style={{ marginLeft: 0 }}

@@ -12,7 +12,7 @@ export default function Card (props) {
                 width: '100%',
                 justifyContent: 'center',
                 alignItems: 'center',
-                background: '#AAAAAA',
+                background: '#BBBBBB',
                 borderRadius: '1vh',
                 borderStyle: 'solid',
                 borderWidth: '.1vw'
@@ -29,8 +29,8 @@ export default function Card (props) {
 
 const styles = StyleSheet.create({
     card: {
-        width: '10vh',
-        height: '15vh',
+        width: '8vh',
+        height: '12vh',
         marginRight: '1vh',
     }
 })

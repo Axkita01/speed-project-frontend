@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet} from 'react-native'
+import { ScrollView } from 'react-native-web';
 import {io} from 'socket.io-client'
 
 export default function Rules ({ navigation }) {
     return (
-    <View style = {{display: 'flex', alignItems: 'center'}}>
+    <ScrollView style = {{background: '#DFDFDF'}}>
+    <View style = {{display: 'flex', alignItems: 'center', marginBottom: '4vh'}}>
         <Text style = {styles.header}>Welcome To Speed!</Text>
         <Text>The Rules:</Text>
         <Text style = {styles.description}>
@@ -36,6 +38,7 @@ export default function Rules ({ navigation }) {
             navigation.navigate('game', {s: socket})}}
           ><Text>Play</Text></TouchableOpacity>
     </View>
+    </ScrollView>
     )
 }
 
@@ -58,7 +61,8 @@ const styles = StyleSheet.create ( {
     description: {
         marginBottom: '2vh',
         width: '70vw',
-        textAlign: 'center'
+        textAlign: 'center',
+        lineHeight: 40
     }
 
 })

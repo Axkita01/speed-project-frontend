@@ -8,8 +8,8 @@ export default function PlaceHolder () {
 
 const styles = StyleSheet.create({
     card: {
-        width: '10vh',
-        height: '15vh',
+        width: '8vh',
+        height: '15.5vh',
         marginRight: '1vh',
     }
 

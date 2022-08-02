@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   FlatList,
   TouchableOpacity,
 } from "react-native-web";
@@ -19,8 +18,8 @@ export default function Game({ navigation, route }) {
   const selected = useRef(null);
   const socket = useRef(null);
   const [deckTops, setTops] = useState([
-    { color: "empty", number: "empty" },
-    { color: "empty", number: "empty" },
+    { color: "", number: "" },
+    { color: "", number: "" },
   ]);
   const [sideDecks, setSides] = useState([[], []]);
   const [oppLength, setOppLength] = useState([]);
@@ -54,8 +53,8 @@ export default function Game({ navigation, route }) {
         setWinner(null);
         setSides([[], []]);
         setTops([
-          { color: "empty", number: "empty" },
-          { color: "empty", number: "empty" },
+          { color: "", number: "" },
+          { color: "", number: "" },
         ]);
         cantPlaceOpp.current = false;
       });
@@ -169,7 +168,7 @@ export default function Game({ navigation, route }) {
       <View>
         {oppLength.length !== 0 ? (
           <FlatList
-            style={{ marginBottom: ".5vw", marginTop: '3.5vh' }}
+            style={{marginTop: '3.5vh' }}
             data={oppLength}
             renderItem={function () {
               return <CardBack/>;
@@ -177,7 +176,8 @@ export default function Game({ navigation, route }) {
             horizontal={true}
           />
         ) : (
-          <PlaceHolder style = {{marginTop: '5'}}/>
+          /*FIXME: Cards moving down when opponent has cards in hand*/
+          <PlaceHolder style = {{marginTop: '6vh'}}/>
         )}
       </View>
       {/*Middle Decks*/}
@@ -188,7 +188,7 @@ export default function Game({ navigation, route }) {
           marginTop: "10vh",
         }}
       >
-        {sideDecks[0].length !== 0 ? <CardBack /> : null}
+        {sideDecks[0].length !== 0 ? <CardBack style = {{marginRight: 0}}/> : <PlaceHolder/>}
 
         <Card
           style={{ marginLeft: 0 }}
@@ -203,7 +203,7 @@ export default function Game({ navigation, route }) {
                 hand[selected.current]["number"] == deckTops[0]["number"] ||
                 hand[selected.current]["number"] ==
                   parseInt(deckTops[0]["number"]) + 1 ||
-                deckTops[0]["number"] == "empty" ||
+                deckTops[0]["number"] == "" ||
                 (deckTops[0]["number"] == "13" &&
                   hand[selected.current]["number"] == "1") ||
                 (deckTops[0]["number"] == "1" &&
@@ -241,7 +241,7 @@ export default function Game({ navigation, route }) {
                 hand[selected.current]["number"] == deckTops[1]["number"] ||
                 hand[selected.current]["number"] ==
                   parseInt(deckTops[1]["number"]) + 1 ||
-                deckTops[1]["number"] == "empty" ||
+                deckTops[1]["number"] == "" ||
                 (deckTops[1]["number"] == "13" &&
                   hand[selected.current]["number"] == "1") ||
                 (deckTops[1]["number"] == "1" &&
@@ -275,7 +275,7 @@ export default function Game({ navigation, route }) {
           <FlatList
             data={hand}
             horizontal={true}
-            style = {{marginBottom: '2vw'}}
+            style = {{marginBottom: '4.7vw'}}
             renderItem={function ({ item }) {
               return (
                 /*ADD PLACEHOLDER WHEN HAND IS ABSENT*/
@@ -295,6 +295,7 @@ export default function Game({ navigation, route }) {
           {deck.length > 0 ? (
             <View>
               <Card
+                style = {styles.deck}
                 color="black"
                 number="deck"
                 onPress={() => {
@@ -304,7 +305,7 @@ export default function Game({ navigation, route }) {
               <TouchableOpacity />
             </View>
           ) : (
-            <PlaceHolder />
+            <PlaceHolder style = {styles.deck}/>
           )}
 
           {/*Cannot place button*/}
@@ -341,7 +342,7 @@ export default function Game({ navigation, route }) {
               socket.current.emit("reset");
             }}
           >
-            Cannot Place
+            Press to play again!
           </TouchableOpacity>
         </View>
       )}
@@ -376,4 +377,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center'
   },
+
+  deck: {
+    marginRight: '5vw'
+  }
 });

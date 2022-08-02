@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Game from "./Game.js";
-import {View, StyleSheet} from 'react-native-web'
+import {View, StyleSheet, ScrollView} from 'react-native-web'
 import Rules from "./Rules.js";
 import Ready from "./Ready.js";
 

@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     card: {
         width: '8vh',
         height: '12vh',
-        marginRight: '1vh',
+        marginRight: '1vw',
     }
 })

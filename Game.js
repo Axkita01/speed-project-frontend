@@ -279,7 +279,7 @@ export default function Game({ navigation, route }) {
           <FlatList
             data={hand}
             horizontal={true}
-            style = {{marginBottom: '4.7vw'}}
+            style = {{marginBottom: '3.5vh'}}
             renderItem={function ({ item }) {
               return (
                 /*ADD PLACEHOLDER WHEN HAND IS ABSENT*/
@@ -301,7 +301,7 @@ export default function Game({ navigation, route }) {
               <Card
                 style = {styles.deck}
                 color="black"
-                number="deck"
+                number="Deck"
                 onPress={() => {
                   handleDraw();
                 }}
@@ -319,7 +319,7 @@ export default function Game({ navigation, route }) {
             }}
             style={styles.noPlace}
           >
-            <Text textAlign = 'center'>Cannot Place</Text>
+            <Text textAlign = 'center' style = {{fontWeight: 'bold'}}>Cannot Place</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -372,10 +372,13 @@ const styles = StyleSheet.create({
   noPlace: {
     width: "10vh",
     height: "10vh",
-    borderRadius: '5vh',
+    marginLeft: '10vw',
+    borderRadius: '1vh',
     borderStyle: 'solid',
     borderWidth: '.1vh',
     background: "#56C7FF",
+    color: 'white',
+    backgroundColor: '#56C7FF',
     display: 'flex',
     justifyContent: 'center',
     textAlign: 'center',
@@ -383,6 +386,7 @@ const styles = StyleSheet.create({
   },
 
   deck: {
-    marginRight: '5vw'
+    /*may not need this style*/
+    left: '15vw'
   }
 });

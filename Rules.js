@@ -24,7 +24,8 @@ export default function Rules ({ navigation }) {
                 middle deck if the top of the targetting pile has a card that has the same number or a difference 
                 of 1 (with the exception of 1 and 13, those may be placed on each other). The deck will disappear 
                 once empty. When one player runs out of cards in their deck and their hand, that player is
-                declared the winner.<br/><br/>
+                declared the winner. Whenever the game ends, both players will see the play again screen but only
+                player 1 (first to join) may restart the game.<br/><br/>
            Additional Rules: <br/>
                If you cannot place a card on the field, press the "cannot place" button. If both players cannot
                place a card, it will replace the top cards of the middle decks with the top cards from the side decks.
@@ -38,7 +39,7 @@ export default function Rules ({ navigation }) {
         style = {styles.connect}
         onPress={() => {
             /*temporary server link*/
-            const socket = io('https://speed-project-server.herokuapp.com');
+            const socket = io('http://localhost:5000');
             navigation.navigate('game', {s: socket})}}
           ><Text>Play</Text></TouchableOpacity>
     </View>

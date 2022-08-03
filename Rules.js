@@ -25,10 +25,14 @@ export default function Rules ({ navigation }) {
                 of 1 (with the exception of 1 and 13, those may be placed on each other). The deck will disappear 
                 once empty. When one player runs out of cards in their deck and their hand, that player is
                 declared the winner.<br/><br/>
-           Additional: <br/>
+           Additional Rules: <br/>
                If you cannot place a card on the field, press the "cannot place" button. If both players cannot
                place a card, it will replace the top cards of the middle decks with the top cards from the side decks.
-               if both players cannot place and the side decks are empty, it is a tie.
+               if both players cannot place and the side decks are empty, it is a tie.<br/><br/>
+          Misc. Information: <br/>
+                There is only one room for the game to take place. If a third person tries to connect, 
+                their connection will be rejected from the room. This project is currently a work in progress
+                but has most of its functionality. Have fun!
         </Text>
         <TouchableOpacity
         style = {styles.connect}

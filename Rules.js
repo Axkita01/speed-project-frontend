@@ -39,7 +39,7 @@ export default function Rules ({ navigation }) {
         style = {styles.connect}
         onPress={() => {
             /*temporary server link*/
-            const socket = io('http://localhost:5000');
+            const socket = io('https://speed-project-server.herokuapp.com');
             navigation.navigate('game', {s: socket})}}
           ><Text>Play</Text></TouchableOpacity>
     </View>

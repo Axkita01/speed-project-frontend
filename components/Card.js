@@ -1,9 +1,28 @@
-import {Button, View, StyleSheet, TouchableOpacity, Text} from "react-native-web"
+import {Animated, View, StyleSheet, TouchableOpacity, Text} from "react-native-web"
+import {useEffect, useState} from 'react'
 
 export default function Card (props) {
     const hex_color = props.color === 'black' ? '#000': '#F00'
+    const [animatedScale] = useState(new Animated.Value(1))
+    const [animatedShadow] = useState(new Animated.Value(0))
+    /*selection animation*/
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(animatedScale, {
+                toValue: (props.selected) ? 1.2: 1,
+                duration: 200,
+                useNativeDriver: true
+            }),
+            Animated.timing(animatedShadow, {
+                toValue: props.selected ? 4: 0,
+                duration: 200,
+                useNativeDriver: true
+            })
+        ], {stopTogether: false}).start()
+    }, [props.selected])
+
     return (
-        <View style = {styles.card}>
+        <Animated.View style = {styles(animatedScale, animatedShadow, props.selected).card}>
             <TouchableOpacity
             color = {'#FFF' ? props.color == 'black': '#F00'} 
             onPress = {props.onPress}
@@ -23,14 +42,19 @@ export default function Card (props) {
                     {props.number}
                 </Text>
             </TouchableOpacity>
-        </View>
+        </Animated.View>
     )
 }
 
-const styles = StyleSheet.create({
+const styles = (animatedScale, animatedShadow, selected) => StyleSheet.create({
     card: {
         width: '8vh',
         height: '12vh',
-        marginRight: '1vw',
+        borderRadius: '1vh',
+        marginRight: !selected ? '2vw': '4vw',
+        marginLeft: !selected ? 0: '2vw',
+        scale: animatedScale,
+        shadowColor: 'black',
+        shadowOffset: {width: animatedShadow, height: animatedShadow}, 
     }
 })

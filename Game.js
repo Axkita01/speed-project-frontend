@@ -15,11 +15,11 @@ import {
 export default function Game({ navigation, route }) {
   const [deck, changeDeck] = useState("");
   const [hand, updateHand] = useState([]);
-  const selected = useRef(null);
+  const [selected, setSelected] = useState(null);
   const socket = useRef(null);
   const [deckTops, setTops] = useState([
-    { color: "", number: "" },
-    { color: "", number: "" },
+    { color: "", number: "", selected: false },
+    { color: "", number: "", selected: false },
   ]);
   const [sideDecks, setSides] = useState([[], []]);
   const [oppLength, setOppLength] = useState([]);
@@ -53,8 +53,8 @@ export default function Game({ navigation, route }) {
         setWinner(null);
         setSides([[], []]);
         setTops([
-          { color: "", number: "" },
-          { color: "", number: "" },
+          { color: "", number: "", selected: false },
+          { color: "", number: "", selected: false },
         ]);
         cantPlaceOpp.current = false;
       });
@@ -135,7 +135,7 @@ export default function Game({ navigation, route }) {
       return;
     }
     socket.current.emit("update-opp", hand.length + 1);
-    var hand_copy = hand;
+    var hand_copy = [...hand];
     var deck_copy = deck;
     const card = deck_copy[deck_copy.length - 1];
     const element = {
@@ -143,6 +143,7 @@ export default function Game({ navigation, route }) {
       idx: hand_copy.length,
       color: card[1],
       number: card[0],
+      selected: false
     };
 
     deck_copy = deck_copy.slice(0, -1);
@@ -200,36 +201,36 @@ export default function Game({ navigation, route }) {
           number={deckTops[0]["number"]}
           onPress={() => {
             if (
-              selected.current !== null &&
+              selected !== null &&
               win == null &&
-              (hand[selected.current]["number"] ==
+              (hand[selected]["number"] ==
                 parseInt(deckTops[0]["number"]) - 1 ||
-                hand[selected.current]["number"] == deckTops[0]["number"] ||
-                hand[selected.current]["number"] ==
+                hand[selected]["number"] == deckTops[0]["number"] ||
+                hand[selected]["number"] ==
                   parseInt(deckTops[0]["number"]) + 1 ||
                 deckTops[0]["number"] == "" ||
                 (deckTops[0]["number"] == "13" &&
-                  hand[selected.current]["number"] == "1") ||
+                  hand[selected]["number"] == "1") ||
                 (deckTops[0]["number"] == "1" &&
-                  hand[selected.current]["number"] == "13"))
+                  hand[selected]["number"] == "13"))
             ) {
               if (hand.length === 1 && deck.length === 0) {
                 socket.current.emit("winner");
                 updateHand([]);
                 return;
               }
-              placeCard([hand[selected.current], deckTops[1]]);
+              placeCard([hand[selected], deckTops[1]]);
             } else {
               return;
             }
 
             var hand_copy = hand;
-            for (var i = selected.current + 1; i < hand.length; i++) {
+            for (var i = selected + 1; i < hand.length; i++) {
               hand_copy[i]["idx"] -= 1;
             }
-            hand_copy.splice(selected.current, 1);
+            hand_copy.splice(selected, 1);
             updateHand(hand_copy);
-            selected.current = null;
+            setSelected(null);
           }}
         />
 
@@ -238,36 +239,36 @@ export default function Game({ navigation, route }) {
           number={deckTops[1]["number"]}
           onPress={() => {
             if (
-              selected.current !== null &&
+              selected !== null &&
               win == null &&
-              (hand[selected.current]["number"] ==
+              (hand[selected]["number"] ==
                 parseInt(deckTops[1]["number"]) - 1 ||
-                hand[selected.current]["number"] == deckTops[1]["number"] ||
-                hand[selected.current]["number"] ==
+                hand[selected]["number"] == deckTops[1]["number"] ||
+                hand[selected]["number"] ==
                   parseInt(deckTops[1]["number"]) + 1 ||
                 deckTops[1]["number"] == "" ||
                 (deckTops[1]["number"] == "13" &&
-                  hand[selected.current]["number"] == "1") ||
+                  hand[selected]["number"] == "1") ||
                 (deckTops[1]["number"] == "1" &&
-                  hand[selected.current]["number"] == "13"))
+                  hand[selected]["number"] == "13"))
             ) {
               if (hand.length === 1 && deck.length === 0) {
                 socket.current.emit("winner");
                 updateHand([]);
                 return;
               }
-              placeCard([deckTops[0], hand[selected.current]]);
+              placeCard([deckTops[0], hand[selected]]);
             } else {
               return;
             }
             var hand_copy = hand;
-            for (var i = selected.current + 1; i < hand.length; i++) {
+            for (var i = selected + 1; i < hand.length; i++) {
               hand_copy[i]["idx"] -= 1;
             }
 
-            hand_copy.splice(selected.current, 1);
+            hand_copy.splice(selected, 1);
             updateHand(hand_copy);
-            selected.current = null;
+            setSelected(null);
           }}
         />
 
@@ -279,14 +280,22 @@ export default function Game({ navigation, route }) {
           <FlatList
             data={hand}
             horizontal={true}
-            style = {{marginBottom: '3.5vh'}}
+            style = {{marginBottom: '3.5vh', display: 'flex', overflow: 'visible'}}
             renderItem={function ({ item }) {
               return (
                 /*ADD PLACEHOLDER WHEN HAND IS ABSENT*/
                 <Card
                   color={item["color"]}
                   number={item["number"]}
-                  onPress={() => (selected.current = item["idx"])}
+                  selected = {item['selected']}
+                  onPress={() => {
+                    if (selected !== null) {
+                    hand[selected]['selected'] = false;
+                    }
+                    setSelected(item["idx"]);
+                    item['selected'] = true
+                    
+                  }}
                 />
               );
             }}

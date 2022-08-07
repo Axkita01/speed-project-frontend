@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TouchableOpacity, View, Text, StyleSheet} from 'react-native'
+import { TouchableOpacity, View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import { ScrollView } from 'react-native-web';
 import {io} from 'socket.io-client'
 

@@ -49,7 +49,7 @@ export default function Rules ({ navigation }) {
             navigation.navigate('game', {s: socket, room: r})}}
           ><Text>Create Room</Text></TouchableOpacity>
         <View style = {styles.textInContain}>
-            <Text style = {{fontSize: '2vw'}}>Enter Room Number to Join:</Text>
+            <Text style = {{fontSize: '60%', marginRight: '1%'}}>Enter Room Number to Join (Enter to Submit):</Text>
             <TextInput
             style = {styles.textIn}
             onChangeText = {setTextInput}
@@ -90,18 +90,20 @@ const styles = StyleSheet.create ( {
     },
 
     textInContain: {
-        width: '50vw',
-        height: '4vw',
+        width: '80%',
+        height: '1.5%',
         marginTop: '3vh',
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
 
     textIn: {
-        width: '100%',
+        width: '20%',
         height: '100%',
         borderStyle: 'solid',
-        borderWidth: '.3vw'
+        borderWidth: '.1vw'
     }
 
 

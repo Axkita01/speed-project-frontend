@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
         width: '8vh',
         height: '12vh',
         marginRight: '1vw',
+        marginLeft: '1vw'
         
     },
 

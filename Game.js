@@ -192,11 +192,10 @@ export default function Game({ navigation, route }) {
           marginTop: "10vh",
         }}
       >
-        {sideDecks[0].length !== 0 ? <CardBack style = {{marginRight: 0}}/> : 
+        {sideDecks[0].length !== 0 ? <CardBack style = {{marginRight: '1vw'}}/> : 
         null}
 
         <Card
-          style={{ marginLeft: 0 }}
           color={deckTops[0]["color"]}
           number={deckTops[0]["number"]}
           onPress={() => {

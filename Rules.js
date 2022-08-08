@@ -1,9 +1,13 @@
 import * as React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
-import { ScrollView } from 'react-native-web';
+import { FlatList, ScrollView, TextInput } from 'react-native-web';
+import {useState} from 'react'
 import {io} from 'socket.io-client'
 
 export default function Rules ({ navigation }) {
+    const [rooms, setRooms] = useState([])
+    const [textInput, setTextInput] = useState('')
+    
     return (
     <ScrollView style = {{background: '#DFDFDF'}}>
     <View style = {{display: 'flex', alignItems: 'center', marginBottom: '4vh'}}>
@@ -40,8 +44,23 @@ export default function Rules ({ navigation }) {
         onPress={() => {
             /*temporary server link*/
             const socket = io('https://speed-project-server.herokuapp.com');
-            navigation.navigate('game', {s: socket})}}
-          ><Text>Play</Text></TouchableOpacity>
+            const r = Math.floor(Math.random() * 10).toString();
+            socket.emit('create_room', r)
+            navigation.navigate('game', {s: socket, room: r})}}
+          ><Text>Create Room</Text></TouchableOpacity>
+        <View style = {styles.textInContain}>
+            <Text style = {{fontSize: '2vw'}}>Enter Room Number to Join:</Text>
+            <TextInput
+            style = {styles.textIn}
+            onChangeText = {setTextInput}
+            value = {textInput}
+            onSubmitEditing = {() => {
+                const s = io('https://speed-project-server.herokuapp.com');
+                const r = textInput
+                navigation.navigate('game', {s: s, room: r})
+            }}
+            />
+        </View>
     </View>
     </ScrollView>
     )
@@ -68,6 +87,23 @@ const styles = StyleSheet.create ( {
         width: '70vw',
         textAlign: 'center',
         lineHeight: 40
+    },
+
+    textInContain: {
+        width: '50vw',
+        height: '4vw',
+        marginTop: '3vh',
+        display: 'flex',
+        flexDirection: 'row'
+    },
+
+    textIn: {
+        width: '100%',
+        height: '100%',
+        borderStyle: 'solid',
+        borderWidth: '.3vw'
     }
+
+
 
 })

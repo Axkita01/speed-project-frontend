@@ -28,6 +28,7 @@ export default function Game({ navigation, route }) {
   /*state determining user connection*/
   const [connected, setConnected] = useState(false);
   /*state determining opponeng connection*/
+  const [room, setRoom] = useState(null)
   const [oppConnected, setOppConnected] = useState(false);
 
   /*tops returned as list of 2 cards*/
@@ -35,9 +36,12 @@ export default function Game({ navigation, route }) {
   useEffect(
     function () {
       socket.current = route.params.s;
+      setRoom(route.params.room)
+      socket.current.emit('join', route.params.room)
       socket.current.on("connection", function startGame() {
         setOppConnected(true);
-        socket.current.emit("reset");
+        /*add rooms to previouslt empty emits*/
+        socket.current.emit("reset", route.params.room);
       });
 
       socket.current.on("rejection", function rejected() {
@@ -99,18 +103,19 @@ export default function Game({ navigation, route }) {
   );
 
   function placeCard(elements) {
-    socket.current.emit("resetplace");
-    socket.current.emit("update-opp", hand.length - 1);
-    socket.current.emit("place", elements);
+    socket.current.emit("resetplace", room);
+    socket.current.emit("update-opp", {hand_length: hand.length - 1, room: room});
+    setTops(elements)
+    socket.current.emit("place", {elements: elements, room: room});
   }
 
   function cantPlace() {
     /*event that indicates no more cards playable, use a ref not state,
       if opponent also cannot place, then draw the side decks*/
     if (cantPlaceOpp.current === true) {
-      socket.current.emit("noplacemutual", sideDecks);
+      socket.current.emit("noplacemutual", {sides: sideDecks, room: room});
     } else {
-      socket.current.emit("noplace");
+      socket.current.emit("noplace", room);
     }
   }
 
@@ -134,7 +139,7 @@ export default function Game({ navigation, route }) {
     if (deck.length === 0 || hand.length === 4 || win !== null) {
       return;
     }
-    socket.current.emit("update-opp", hand.length + 1);
+    socket.current.emit("update-opp", {hand_length:hand.length + 1, room:room});
     var hand_copy = [...hand];
     var deck_copy = deck;
     const card = deck_copy[deck_copy.length - 1];
@@ -214,7 +219,7 @@ export default function Game({ navigation, route }) {
                   hand[selected]["number"] == "13"))
             ) {
               if (hand.length === 1 && deck.length === 0) {
-                socket.current.emit("winner");
+                socket.current.emit("winner", room);
                 updateHand([]);
                 return;
               }
@@ -252,7 +257,7 @@ export default function Game({ navigation, route }) {
                   hand[selected]["number"] == "13"))
             ) {
               if (hand.length === 1 && deck.length === 0) {
-                socket.current.emit("winner");
+                socket.current.emit("winner", room);
                 updateHand([]);
                 return;
               }
@@ -341,7 +346,7 @@ export default function Game({ navigation, route }) {
           page
         ) : (
           <View>
-            <Text>Awaiting Player Connection...</Text>
+            <Text>Awaiting Player Connection {'(Room ' + room + ')'}...</Text>
           </View>
         )
       ) : (
@@ -351,7 +356,7 @@ export default function Game({ navigation, route }) {
           <Text>Play Again?</Text>
           <TouchableOpacity
             onPress={() => {
-              socket.current.emit("reset");
+              socket.current.emit("reset", room);
             }}
           >
             Press to play again!

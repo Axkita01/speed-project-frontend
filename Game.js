@@ -110,8 +110,9 @@ export default function Game({ navigation, route }) {
   function placeCard(elements) {
     socket.current.emit("resetplace", room);
     socket.current.emit("update-opp", {hand_length: hand.length - 1, room: room});
-    setTops(elements)
     socket.current.emit("place", {elements: elements, room: room});
+    setTops(elements)
+    setCannotPlace(false)
   }
 
   function cantPlace() {

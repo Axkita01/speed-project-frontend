@@ -1,16 +1,25 @@
 import * as React from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
-import { FlatList, ScrollView, TextInput } from 'react-native-web';
-import {useState} from 'react'
-import {io} from 'socket.io-client'
+import { TouchableOpacity, View, Text, StyleSheet} from 'react-native-web'
 
-export default function Rules ({ navigation }) {
-    const [rooms, setRooms] = useState([])
-    const [textInput, setTextInput] = useState('')
-    
+
+
+
+export default function Rules ({ navigation}) {
     return (
-    <ScrollView style = {{background: '#DFDFDF'}}>
-    <View style = {{display: 'flex', alignItems: 'center', marginBottom: '4vh'}}>
+    <View style = {{display: 'flex', alignItems: 'center', marginBottom: '4vh', background: '#DFDFDF'}}>
+    {React.useLayoutEffect(() => {
+            navigation.setOptions({
+              headerLeft: () => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("home");
+                  }}
+                >
+                  <Text style={styles.exit}>Go Home</Text>
+                </TouchableOpacity>
+              ),
+            });
+          }, [navigation])}
         <Text style = {styles.header}>Welcome To Speed!</Text>
         <Text>The Rules:</Text>
         <Text style = {styles.description}>
@@ -39,30 +48,7 @@ export default function Rules ({ navigation }) {
                 their connection will be rejected from the room. This project is currently a work in progress
                 but has most of its functionality. Have fun!
         </Text>
-        <TouchableOpacity
-        style = {styles.connect}
-        onPress={() => {
-            /*temporary server link*/
-            const socket = io('https://speed-project-server.herokuapp.com');
-            const r = Math.floor(Math.random() * 10).toString();
-            socket.emit('create_room', r)
-            navigation.navigate('game', {s: socket, room: r})}}
-          ><Text>Create Room</Text></TouchableOpacity>
-        <View style = {styles.textInContain}>
-            <Text style = {{fontSize: '60%', marginRight: '1%'}}>Enter Room Number to Join (Enter to Submit):</Text>
-            <TextInput
-            style = {styles.textIn}
-            onChangeText = {setTextInput}
-            value = {textInput}
-            onSubmitEditing = {() => {
-                const s = io('https://speed-project-server.herokuapp.com');
-                const r = textInput
-                navigation.navigate('game', {s: s, room: r})
-            }}
-            />
-        </View>
     </View>
-    </ScrollView>
     )
 }
 
@@ -73,14 +59,6 @@ const styles = StyleSheet.create ( {
         marginTop: '2vh'
     },
 
-    connect: {
-        borderStyle: 'solid',
-        borderWidth: '.2vw',
-        width: '10%',
-        fontSize: '.5vw',
-        alignItems: 'center',
-        display: 'flex'
-    },
 
     description: {
         marginBottom: '2vh',
@@ -88,24 +66,10 @@ const styles = StyleSheet.create ( {
         textAlign: 'center',
         lineHeight: 40
     },
-
-    textInContain: {
-        width: '80%',
-        height: '1.5%',
-        marginTop: '3vh',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
-    textIn: {
-        width: '20%',
-        height: '100%',
-        borderStyle: 'solid',
-        borderWidth: '.1vw'
-    }
-
-
+    exit: {
+        fontWeight: "bold",
+        color: "white",
+        marginLeft: "1vw",
+      },
 
 })

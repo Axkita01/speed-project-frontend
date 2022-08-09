@@ -172,6 +172,7 @@ export default function Game({ navigation, route }) {
             </TouchableOpacity>
           ),
         });
+
       }, [navigation])}
 
       <View>
@@ -346,7 +347,7 @@ export default function Game({ navigation, route }) {
           page
         ) : (
           <View>
-            <Text>Awaiting Player Connection {'(Room ' + room + ')'}...</Text>
+            <Text style = {{color: 'white'}}>Awaiting Player Connection {'(Room ' + room + ')'}...</Text>
           </View>
         )
       ) : (

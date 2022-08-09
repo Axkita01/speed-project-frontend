@@ -6,7 +6,7 @@ import { TouchableOpacity, View, Text, StyleSheet} from 'react-native-web'
 
 export default function Rules ({ navigation}) {
     return (
-    <View style = {{display: 'flex', alignItems: 'center', marginBottom: '4vh', background: '#DFDFDF'}}>
+    <View style = {styles.container}>
     {React.useLayoutEffect(() => {
             navigation.setOptions({
               headerLeft: () => (
@@ -15,21 +15,21 @@ export default function Rules ({ navigation}) {
                     navigation.navigate("home");
                   }}
                 >
-                  <Text style={styles.exit}>Go Home</Text>
+                  <Text style={styles.exit}>Exit</Text>
                 </TouchableOpacity>
               ),
             });
           }, [navigation])}
-        <Text style = {styles.header}>Welcome To Speed!</Text>
-        <Text>The Rules:</Text>
+        <Text style = {styles.header}>The Rules:</Text>
         <Text style = {styles.description}>
             Setup:<br/>
-                Once both players connect, each will receieve cards in their deck.
+                Once both players connect to the same room, each will receieve cards in their deck.
                 The two center piles will be initially empty and allow for any
                 card to be placed within them. The two outermost piles are there in the
                 case that neither player can place a card. Each player may have up to four
-                cards in their hand. <br/><br/>
-
+                cards in their hand.
+        </Text> <br/>
+        <Text style = {styles.description}>
             Rules/Gameplay:<br/>
                 To draw cards, click the deck located at the bottom of the screen. You may have
                 up to four cards in your hand at once. To place a card, select a card in your hand by
@@ -38,11 +38,15 @@ export default function Rules ({ navigation}) {
                 of 1 (with the exception of 1 and 13, those may be placed on each other). The deck will disappear 
                 once empty. When one player runs out of cards in their deck and their hand, that player is
                 declared the winner. Whenever the game ends, both players will see the play again screen but only
-                player 1 (first to join) may restart the game.<br/><br/>
+                player 1 (first to join) may restart the game.<br/>
+        </Text>
+        <Text style = {styles.description}>
            Additional Rules: <br/>
                If you cannot place a card on the field, press the "cannot place" button. If both players cannot
                place a card, it will replace the top cards of the middle decks with the top cards from the side decks.
-               if both players cannot place and the side decks are empty, it is a tie.<br/><br/>
+               if both players cannot place and the side decks are empty, it is a tie.<br/>
+        </Text>
+        <Text style = {styles.description}>
           Misc. Information: <br/>
                 There is only one room for the game to take place. If a third person tries to connect, 
                 their connection will be rejected from the room. This project is currently a work in progress
@@ -56,16 +60,25 @@ const styles = StyleSheet.create ( {
     header: {
         fontWeight: 'bold',
         marginBottom: '2vh',
-        marginTop: '2vh'
+        marginTop: '2vh',
+        color: 'white'
     },
 
+    container: {
+        display: 'flex', 
+        alignItems: 'center', 
+        marginBottom: '4vh',
+        color: 'white'
+    },
 
     description: {
         marginBottom: '2vh',
         width: '70vw',
         textAlign: 'center',
-        lineHeight: 40
+        lineHeight: 30,
+        color: 'white'
     },
+
     exit: {
         fontWeight: "bold",
         color: "white",

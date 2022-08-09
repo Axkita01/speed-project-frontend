@@ -26,13 +26,14 @@ export default function Game({ navigation, route }) {
   const cantPlaceOpp = useRef(false);
   const [win, setWinner] = useState(null);
   /*state determining user connection*/
-  const [connected, setConnected] = useState(false);
+  const [cannotPlace, setCannotPlace] = useState(false)
   /*state determining opponeng connection*/
   const [room, setRoom] = useState(null)
   const [oppConnected, setOppConnected] = useState(false);
 
   /*tops returned as list of 2 cards*/
   const nav = navigation;
+  console.log(cantPlaceOpp)
   useEffect(
     function () {
       socket.current = route.params.s;
@@ -45,7 +46,7 @@ export default function Game({ navigation, route }) {
       });
 
       socket.current.on("rejection", function rejected() {
-        alert("Connection Failed, Room Full");
+        alert("Connection Failed, room full or does not exist");
         socket.current.disconnect();
         nav.navigate("home");
       });
@@ -56,6 +57,8 @@ export default function Game({ navigation, route }) {
         setOppLength([]);
         setWinner(null);
         setSides([[], []]);
+        setCannotPlace(false)
+        setCannotPlace(false)
         setTops([
           { color: "", number: "", selected: false },
           { color: "", number: "", selected: false },
@@ -85,11 +88,13 @@ export default function Game({ navigation, route }) {
 
       socket.current.on("side-deck", function side(res) {
         cantPlaceOpp.current = false;
+        setCannotPlace(false)
         setSides(res);
       });
 
       socket.current.on("reset", function reset(res) {
         changeDeck(res);
+        setCannotPlace(false)
         setOppLength([]);
         updateHand([]);
         setWinner(null);
@@ -114,8 +119,11 @@ export default function Game({ navigation, route }) {
       if opponent also cannot place, then draw the side decks*/
     if (cantPlaceOpp.current === true) {
       socket.current.emit("noplacemutual", {sides: sideDecks, room: room});
-    } else {
+    } 
+    
+    else {
       socket.current.emit("noplace", room);
+      setCannotPlace(true)
     }
   }
 
@@ -158,7 +166,7 @@ export default function Game({ navigation, route }) {
   }
 
   const page = (
-    <View style={styles.container}>
+    <View style={styles(cannotPlace).container}>
       {React.useLayoutEffect(() => {
         navigation.setOptions({
           headerLeft: () => (
@@ -168,7 +176,7 @@ export default function Game({ navigation, route }) {
                 navigation.navigate("home");
               }}
             >
-              <Text style={styles.exit}>Exit</Text>
+              <Text style={styles(cannotPlace).exit}>Exit</Text>
             </TouchableOpacity>
           ),
         });
@@ -313,7 +321,7 @@ export default function Game({ navigation, route }) {
           {deck.length > 0 ? (
             <View>
               <Card
-                style = {styles.deck}
+                style = {styles(cannotPlace).deck}
                 color="black"
                 number="Deck"
                 onPress={() => {
@@ -323,7 +331,7 @@ export default function Game({ navigation, route }) {
               <TouchableOpacity />
             </View>
           ) : (
-            <PlaceHolder style = {styles.deck}/>
+            <PlaceHolder style = {styles(cannotPlace).deck}/>
           )}
 
           {/*Cannot place button*/}
@@ -331,7 +339,7 @@ export default function Game({ navigation, route }) {
             onPress={() => {
               cantPlace();
             }}
-            style={styles.noPlace}
+            style={styles(cannotPlace).noPlace}
           >
             <Text textAlign = 'center' style = {{fontWeight: 'bold'}}>Cannot Place</Text>
           </TouchableOpacity>
@@ -369,7 +377,7 @@ export default function Game({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = (cannotPlace) => StyleSheet.create({
   container: {
     flex: 1,
     background: "transparent",
@@ -392,7 +400,7 @@ const styles = StyleSheet.create({
     borderWidth: '.1vh',
     background: "#56C7FF",
     color: 'white',
-    backgroundColor: '#56C7FF',
+    backgroundColor: !cannotPlace ? '#56C7FF': '#C75610',
     display: 'flex',
     justifyContent: 'center',
     textAlign: 'center',

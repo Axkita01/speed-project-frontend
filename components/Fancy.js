@@ -24,8 +24,6 @@ const styles =  (scale, shadowVal) => StyleSheet.create({
         fontSize: '70%',
         fontWeight: 'bold',
         color: '#FFFFFF',
-        outline: 'black',
-        
     },
 
     buttonContain: {

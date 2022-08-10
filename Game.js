@@ -33,7 +33,7 @@ export default function Game({ navigation, route }) {
 
   /*tops returned as list of 2 cards*/
   const nav = navigation;
-  console.log(cantPlaceOpp)
+  
   useEffect(
     function () {
       socket.current = route.params.s;

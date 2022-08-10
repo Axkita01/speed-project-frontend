@@ -4,25 +4,21 @@ import {
 import {useState} from 'react'
 import {io} from 'socket.io-client'
 import Fancy from './components/Fancy'
+import {useFonts} from 'expo-font'
 
 
 export default function Home({navigation}) {
     const [textInput, setTextInput] = useState('')
-
+    let [fonts] = useFonts({
+        'KdamThmorPro': require('./assets/fonts/KdamThmorPro-Regular.ttf'),
+        'Karla': require('./assets/fonts/Karla-VariableFont_wght.ttf')
+    })
     return (
         <View style = {styles.container}>
             <Text style = {styles.header}>Welcome to Speed!</Text>
 
             <Fancy text = 'Rules' onPress = {() => {navigation.navigate('rules')}}/>
             
-            {/*<Animated.Pressable 
-            onPress = {() => {navigation.navigate('rules')}}
-            style = {styles.button}>
-                <Text style = {styles.buttonText}>Rules</Text>
-            </Animated.Pressable>
-            */}
-            
-
             <Fancy
             text = 'Create Room'
             onPress={() => {
@@ -83,14 +79,16 @@ const styles = StyleSheet.create({
         fontSize: '100%',
         fontWeight: 'bold',
         marginBottom: '2%',
-        color: 'white'
+        color: 'white',
+        fontFamily: 'Kdam Thmor Pro'
     },
 
     textInHeader: {
         fontSize: '90%', 
         marginRight: '1%',
         color: 'white',
-        marginBottom: '1vh'
+        marginBottom: '1vh',
+        fontFamily: 'Karla'
     }
   
     }

@@ -21,6 +21,7 @@ export default function Rules ({ navigation}) {
             });
           }, [navigation])}
         <Text style = {styles.header}>The Rules:</Text>
+        <View>
         <Text style = {styles.description}>
             Setup:<br/>
                 Once both players connect to the same room, each will receieve cards in their deck.
@@ -29,6 +30,8 @@ export default function Rules ({ navigation}) {
                 case that neither player can place a card. Each player may have up to four
                 cards in their hand.
         </Text> <br/>
+        </View>
+        <View>
         <Text style = {styles.description}>
             Rules/Gameplay:<br/>
                 To draw cards, click the deck located at the bottom of the screen. You may have
@@ -40,18 +43,22 @@ export default function Rules ({ navigation}) {
                 declared the winner. Whenever the game ends, both players will see the play again screen but only
                 player 1 (first to join) may restart the game.<br/>
         </Text>
+        </View>
+        <View>
         <Text style = {styles.description}>
            Additional Rules: <br/>
                If you cannot place a card on the field, press the "cannot place" button. If both players cannot
                place a card, it will replace the top cards of the middle decks with the top cards from the side decks.
                if both players cannot place and the side decks are empty, it is a tie.<br/>
         </Text>
+        </View>
+        <View>
         <Text style = {styles.description}>
           Misc. Information: <br/>
-                There is only one room for the game to take place. If a third person tries to connect, 
-                their connection will be rejected from the room. This project is currently a work in progress
+                This project is currently a work in progress
                 but has most of its functionality. Have fun!
         </Text>
+        </View>
     </View>
     )
 }
@@ -59,24 +66,28 @@ export default function Rules ({ navigation}) {
 const styles = StyleSheet.create ( {
     header: {
         fontWeight: 'bold',
-        marginBottom: '2vh',
-        marginTop: '2vh',
+        marginBottom: '1vh',
+        marginTop: '1vh',
         color: 'white'
     },
 
     container: {
         display: 'flex', 
         alignItems: 'center', 
-        marginBottom: '4vh',
         color: 'white'
     },
 
     description: {
-        marginBottom: '2vh',
+        marginBottom: '3vh',
         width: '70vw',
         textAlign: 'center',
         lineHeight: 30,
-        color: 'white'
+        color: 'white',
+        borderStyle: 'solid',
+        borderWidth: '.1vh',
+        borderRadius: '1vh',
+        paddingLeft: '2vw',
+        paddingRight: '2vw'
     },
 
     exit: {

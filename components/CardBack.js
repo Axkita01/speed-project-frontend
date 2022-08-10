@@ -5,7 +5,7 @@ export default function CardBack () {
         <View style = {styles.card}>
             <Image
             style = {styles.image}
-            source = {require('../Images/card back.jpg')}/>
+            source = {require('../assets/Images/card back.jpg')}/>
         </View>
     )
 }

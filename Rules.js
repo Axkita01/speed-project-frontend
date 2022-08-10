@@ -1,12 +1,11 @@
 import * as React from 'react'
-import { TouchableOpacity, View, Text, StyleSheet} from 'react-native-web'
+import { TouchableOpacity, View, ScrollView, Text, StyleSheet,} from 'react-native-web'
 
 
 
-
-export default function Rules ({ navigation}) {
+export default function Rules ({navigation}) {
     return (
-    <View style = {styles.container}>
+    <ScrollView style = {styles.container} contentContainerStyle = {{alignItems: 'center'}}>
     {React.useLayoutEffect(() => {
             navigation.setOptions({
               headerLeft: () => (
@@ -59,7 +58,7 @@ export default function Rules ({ navigation}) {
                 but has most of its functionality. Have fun!
         </Text>
         </View>
-    </View>
+    </ScrollView>
     )
 }
 
@@ -72,20 +71,21 @@ const styles = StyleSheet.create ( {
     },
 
     container: {
-        display: 'flex', 
-        alignItems: 'center', 
-        color: 'white'
+        display: 'flex',  
+        color: 'white',
     },
 
     description: {
         marginBottom: '3vh',
         width: '70vw',
+        fontSize: '1.5vh',
         textAlign: 'center',
         lineHeight: 30,
         color: 'white',
         borderStyle: 'solid',
-        borderWidth: '.1vh',
-        borderRadius: '1vh',
+        borderWidth: '.1vw',
+        borderRadius: '1vw',
+        borderColor: 'white',
         paddingLeft: '2vw',
         paddingRight: '2vw'
     },

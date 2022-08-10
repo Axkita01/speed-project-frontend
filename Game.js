@@ -11,6 +11,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native-web";
+import WinningScreen from "./components/WinningScreen.js";
 
 export default function Game({ navigation, route }) {
   const [deck, changeDeck] = useState("");
@@ -360,22 +361,13 @@ export default function Game({ navigation, route }) {
           </View>
         )
       ) : (
-        <View>
-          {/*Play Again Screen*/}
-          <Text>{winningString(win)}</Text>
-          <Text>Play Again?</Text>
-          <TouchableOpacity
-            onPress={() => {
-              socket.current.emit("reset", room);
-            }}
-          >
-            Press to play again!
-          </TouchableOpacity>
-        </View>
+        <WinningScreen socket = {socket.current} room = {room} winner = {win}/>
       )}
       <StatusBar style="auto" />
     </View>
+          
   );
+
 }
 
 const styles = (cannotPlace) => StyleSheet.create({
@@ -405,11 +397,13 @@ const styles = (cannotPlace) => StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     textAlign: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    color: 'white'
   },
 
   deck: {
     /*may not need this style*/
     left: '15vw'
-  }
+  },
+
 });

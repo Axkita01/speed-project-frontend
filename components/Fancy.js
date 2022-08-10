@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react'
 import {useFonts} from 'expo-font'
 
 export default function Fancy(props) {
+    /*Props are onPress, text*/
     const [pressed, changePressed] = useState(false)
     const [scale] = useState(new Animated.Value(1))
     const [shadowVal] = useState(new Animated.Value(0))
@@ -23,7 +24,7 @@ export default function Fancy(props) {
             }),
 
             Animated.timing(scale, {
-                toValue: pressed ? .98: 1,
+                toValue: pressed ? .94: 1,
                 duation: 1,
                 useNativeDriver: true
             })

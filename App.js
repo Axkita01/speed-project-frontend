@@ -7,11 +7,7 @@ import Rules from "./Rules.js";
 import Home from "./Home.js";
 
 const Stack = createNativeStackNavigator();
-/* Make side decks disappear when they run out, make game not reset
-before restart screen so that displays winning string correctly, make restart screen not
-biggy when opponent is not connected, fix image border radius,  */
 export default function App(props) {
-
   const theme = {
     ...DefaultTheme,
     colors: {

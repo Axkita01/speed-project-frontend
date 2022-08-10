@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Game from "./Game.js";
-import {View, StyleSheet, ScrollView} from 'react-native-web'
+import {View} from 'react-native-web'
 import Rules from "./Rules.js";
 import Home from "./Home.js";
 
@@ -39,7 +39,7 @@ export default function App(props) {
                                   }}>
                               </View>)
                   },
-                    headerTintColor: 'white',
+                    headerTintColor: 'white'
                   }}/>
         <Stack.Screen
           name="rules"

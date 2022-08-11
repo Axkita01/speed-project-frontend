@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native-web";
 import WinningScreen from "./components/WinningScreen.js";
+import Awaiting from "./components/Awaiting.js";
 
 export default function Game({ navigation, route }) {
   const [deck, changeDeck] = useState("");
@@ -356,9 +357,7 @@ export default function Game({ navigation, route }) {
         oppConnected ? (
           page
         ) : (
-          <View>
-            <Text style = {{color: 'white'}}>Awaiting Player Connection {'(Room ' + room + ')'}...</Text>
-          </View>
+          <Awaiting room = {room}/>
         )
       ) : (
         <WinningScreen socket = {socket.current} room = {room} winner = {win}/>

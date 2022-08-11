@@ -1,4 +1,4 @@
-import {View, TouchableOpacity, StyleSheet, Text} from 'react-native-web'
+import {View,  StyleSheet, Text} from 'react-native-web'
 import Fancy from './Fancy';
 
 export default function WinningScreen(props) {

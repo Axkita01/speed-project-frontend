@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import {useFonts} from 'expo-font'
 
 export default function Card (props) {
-    const hex_color = props.color === 'black' ? '#FFFFFF': '#49BBF2'
+    const hex_color = props.color === 'black' ? '#FFFFFF': '#44B6ED'
     const [animatedScale] = useState(new Animated.Value(1))
     const [animatedShadow] = useState(new Animated.Value(0))
     /*Fonts*/

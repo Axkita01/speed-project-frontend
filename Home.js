@@ -5,6 +5,8 @@ import {useState} from 'react'
 import {io} from 'socket.io-client'
 import Fancy from './components/Fancy'
 import {useFonts} from 'expo-font'
+import Deck from './components/Deck'
+
 
 
 export default function Home({navigation}) {
@@ -37,9 +39,10 @@ export default function Home({navigation}) {
             onChangeText = {setTextInput}
             value = {textInput}
             onSubmitEditing = {() => {
-                const s = io('https://speed-project-server.herokuapp.com');
-                const r = textInput
-                navigation.navigate('game', {s: s, room: r})
+                /*Add Error Handling*/
+                let s = io('https://speed-project-server.herokuapp.com');
+                const r = textInput;
+                navigation.navigate('game', {s: s, room: r});
             }}
             />
         </View>

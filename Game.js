@@ -13,6 +13,7 @@ import {
 } from "react-native-web";
 import WinningScreen from "./components/WinningScreen.js";
 import Awaiting from "./components/Awaiting.js";
+import Deck from "./components/Deck.js";
 
 export default function Game({ navigation, route }) {
   const [deck, changeDeck] = useState("");
@@ -47,6 +48,15 @@ export default function Game({ navigation, route }) {
         socket.current.emit("reset", route.params.room);
       });
 
+      socket.current.on('disconnect', function lostConnection() {
+        /*displays if hand, deck empty and disconnected*/
+        socket.current.disconnect()
+        navigation.navigate('home')
+        if (oppConnected ||hand || deck) {
+          alert('Left game (lost connection or exited)')
+        }
+      })
+
       socket.current.on("rejection", function rejected() {
         alert("Connection Failed, room full or does not exist");
         socket.current.disconnect();
@@ -66,6 +76,7 @@ export default function Game({ navigation, route }) {
           { color: "", number: "", selected: false },
         ]);
         cantPlaceOpp.current = false;
+        alert("Opponent Disconnected")
       });
       /*resets cant place reference if opponent places card again*/
       socket.current.on("resetplace", function canPlace() {
@@ -323,15 +334,7 @@ export default function Game({ navigation, route }) {
         <View style = {{flexDirection: 'row', alignItems: 'center'}}>
           {deck.length > 0 ? (
             <View>
-              <Card
-                style = {styles(cannotPlace).deck}
-                color="black"
-                number="Deck"
-                onPress={() => {
-                  handleDraw();
-                }}
-              />
-              <TouchableOpacity />
+              <Deck onPress = {() => {handleDraw()}}/>
             </View>
           ) : (
             <PlaceHolder style = {styles(cannotPlace).deck}/>
@@ -344,7 +347,7 @@ export default function Game({ navigation, route }) {
             }}
             style={styles(cannotPlace).noPlace}
           >
-            <Text textAlign = 'center' style = {{fontWeight: 'bold'}}>Cannot Place</Text>
+            <Text textAlign = 'center' style = {styles(cannotPlace).cannotPlaceText}>Cannot Place</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -404,5 +407,11 @@ const styles = (cannotPlace) => StyleSheet.create({
     /*may not need this style*/
     left: '15vw'
   },
+
+  cannotPlaceText: {
+    fontWeight: 'bold',
+    fontSize: '2vh',
+    color: 'white'
+  }
 
 });

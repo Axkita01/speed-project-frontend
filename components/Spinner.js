@@ -2,25 +2,31 @@ import {Animated, StyleSheet} from 'react-native-web'
 import {useState, useEffect} from 'react'
 
 export default function Spinner() {
-    const [opacity] = useState(new Animated.Value(.5))
-    const [scale] = useState(new Animated.Value(1.7))
+    const [opacity] = useState(new Animated.Value(.1))
+    const [scale] = useState(new Animated.Value(.2))
     useEffect( () =>  {
         Animated.loop(
         Animated.sequence([
         Animated.parallel([
             Animated.timing(opacity,
                 {
-                toValue: 0,
-                duration: 2000,
+                toValue: .7,
+                duration: 1000,
                 useNativeDriver: true,
                 }),
 
             Animated.timing(scale, {
-                toValue: .9,
-                duration: 2000,
+                toValue: 1.7,
+                duration: 1000,
                 useNativeDriver: true,
             })
-            ]), Animated.delay(200)])).start()
+            ]), 
+            Animated.timing(opacity,{
+                toValue: 0,
+                useNativeDriver: true,
+                duration: 1000
+            }),
+            Animated.delay(200)])).start()
         }, []) 
 
 

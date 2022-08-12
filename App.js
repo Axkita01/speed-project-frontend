@@ -28,7 +28,7 @@ export default function App(props) {
                               style = {{
                                   height: '65px',
                                   width: '100%', 
-                                  background: '#56C7FF',
+                                  backgroundColor: '#56C7FF',
                                   color: 'white',
                                   borderStyle: 'solid',
                                   borderWidth: '.1vh'
@@ -46,7 +46,7 @@ export default function App(props) {
                                 style = {{
                                     height: '65px',
                                     width: '100%', 
-                                    background: '#56C7FF',
+                                    backgroundColor: '#56C7FF',
                                     color: 'white',
                                     borderStyle: 'solid',
                                     borderWidth: '.1vh'
@@ -66,7 +66,7 @@ export default function App(props) {
                    style = {{
                        height: '65px',
                        width: '100%', 
-                       background: '#56C7FF',
+                       backgroundColor: '#56C7FF',
                        color: 'white',
                        borderStyle: 'solid',
                        borderWidth: '.1vh'

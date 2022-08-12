@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import PlaceHolder from "./components/PlaceHolder.js";
 import Card from "./components/Card";
 import CardBack from "./components/CardBack";
-import { useState, useRef } from "react";
+import { useState, useRef, useReducer } from "react";
 import {
   StyleSheet,
   Text,
@@ -15,6 +15,7 @@ import WinningScreen from "./components/WinningScreen.js";
 import Awaiting from "./components/Awaiting.js";
 import Deck from "./components/Deck.js";
 
+const initialOppLength = {oppLength: []};
 export default function Game({ navigation, route }) {
   const [deck, changeDeck] = useState("");
   const [hand, updateHand] = useState([]);
@@ -24,8 +25,9 @@ export default function Game({ navigation, route }) {
     { color: "", number: "", selected: false },
     { color: "", number: "", selected: false },
   ]);
+  /*integrate side decks into useReducer to optimize*/
   const [sideDecks, setSides] = useState([[], []]);
-  const [oppLength, setOppLength] = useState([]);
+  const [oppLengthState, oppLengthDispatch] = useReducer(oppLengthReducer, initialOppLength);
   const cantPlaceOpp = useRef(false);
   const [win, setWinner] = useState(null);
   /*state determining user connection*/
@@ -36,7 +38,6 @@ export default function Game({ navigation, route }) {
 
   /*tops returned as list of 2 cards*/
   const nav = navigation;
-  
   useEffect(
     function () {
       socket.current = route.params.s;
@@ -66,7 +67,7 @@ export default function Game({ navigation, route }) {
       socket.current.on("disconnection", function stopGame() {
         setOppConnected(false);
         updateHand([]);
-        setOppLength([]);
+        oppLengthDispatch({type: 'reset'});
         setWinner(null);
         setSides([[], []]);
         setCannotPlace(false)
@@ -92,7 +93,8 @@ export default function Game({ navigation, route }) {
       });
 
       socket.current.on("update-opp", function handOpp(res) {
-        setOppLength(res);
+        console.log(res)
+        oppLengthDispatch({type: res})
       });
 
       socket.current.on("tops-change", function tops(res) {
@@ -108,10 +110,10 @@ export default function Game({ navigation, route }) {
       socket.current.on("reset", function reset(res) {
         changeDeck(res);
         setCannotPlace(false)
-        setOppLength([]);
         updateHand([]);
         setWinner(null);
         cantPlaceOpp.current = false;
+        oppLengthDispatch({type: 'reset'})
       });
       return function unMount () {
         socket.current.disconnect()
@@ -122,7 +124,7 @@ export default function Game({ navigation, route }) {
 
   function placeCard(elements) {
     socket.current.emit("resetplace", room);
-    socket.current.emit("update-opp", {hand_length: hand.length - 1, room: room});
+    socket.current.emit("update-opp", {hand_length: hand.length - 1, room: room, reduce: 'reduce'});
     socket.current.emit("place", {elements: elements, room: room});
     setTops(elements)
     setCannotPlace(false)
@@ -161,7 +163,7 @@ export default function Game({ navigation, route }) {
     if (deck.length === 0 || hand.length === 4 || win !== null) {
       return;
     }
-    socket.current.emit("update-opp", {hand_length:hand.length + 1, room:room});
+    socket.current.emit("update-opp", {hand_length:hand.length + 1, room:room, reduce: 'increase'});
     var hand_copy = [...hand];
     var deck_copy = deck;
     const card = deck_copy[deck_copy.length - 1];
@@ -177,6 +179,26 @@ export default function Game({ navigation, route }) {
     hand_copy.push(element);
     updateHand(hand_copy);
     changeDeck(deck_copy);
+  }
+
+  function oppLengthReducer(state, action) {
+    console.log(action.type)
+    switch (action.type){
+      case 'reduce':
+        var newOppLength = [...state.oppLength]
+        newOppLength.pop()
+        return {oppLength: newOppLength}
+      
+      case 'increase':
+        var newOppLength = [...state.oppLength, 1]
+        return {oppLength: newOppLength}
+      
+      case 'reset':
+        return initialOppLength
+
+      default:
+        throw Error('This is my Error')
+    }
   }
 
   const page = (
@@ -196,12 +218,12 @@ export default function Game({ navigation, route }) {
         });
 
       }, [navigation])}
-
+      {/*opponent's hand*/}
       <View>
-        {oppLength.length !== 0 ? (
+        {oppLengthState.oppLength.length !== 0 ? (
           <FlatList
             style={{marginTop: '3.5vh' }}
-            data={oppLength}
+            data={oppLengthState.oppLength}
             renderItem={function () {
               return <CardBack/>;
             }}
@@ -212,6 +234,7 @@ export default function Game({ navigation, route }) {
           <PlaceHolder style = {{marginTop: '6vh'}}/>
         )}
       </View>
+
       {/*Middle Decks*/}
       <View
         style={{
@@ -301,7 +324,8 @@ export default function Game({ navigation, route }) {
 
         {sideDecks[0].length !== 0 ? <CardBack /> : null}
       </View>
-
+      
+      {/*current player's hand*/}
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         {hand.length !== 0 ? (
           <FlatList
@@ -375,7 +399,6 @@ export default function Game({ navigation, route }) {
 const styles = (cannotPlace) => StyleSheet.create({
   container: {
     flex: 1,
-    background: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -393,7 +416,6 @@ const styles = (cannotPlace) => StyleSheet.create({
     borderRadius: '1vh',
     borderStyle: 'solid',
     borderWidth: '.1vh',
-    background: "#56C7FF",
     color: 'white',
     backgroundColor: !cannotPlace ? '#56C7FF': '#C75610',
     display: 'flex',

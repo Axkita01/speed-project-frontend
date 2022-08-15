@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import PlaceHolder from "./components/PlaceHolder.js";
 import Card from "./components/Card";
 import CardBack from "./components/CardBack";
-import { useState, useRef, useReducer } from "react";
+import { useState, useRef, useReducer, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -15,10 +15,9 @@ import WinningScreen from "./components/WinningScreen.js";
 import Awaiting from "./components/Awaiting.js";
 import Deck from "./components/Deck.js";
 
-const initialOppLength = {oppLength: []};
+const initialGameState = {oppLength: [], deck: [], hand: []};
 export default function Game({ navigation, route }) {
-  const [deck, changeDeck] = useState("");
-  const [hand, updateHand] = useState([]);
+  const mounted = useRef(false)
   const [selected, setSelected] = useState(null);
   const socket = useRef(null);
   const [deckTops, setTops] = useState([
@@ -27,12 +26,10 @@ export default function Game({ navigation, route }) {
   ]);
   /*integrate side decks into useReducer to optimize*/
   const [sideDecks, setSides] = useState([[], []]);
-  const [oppLengthState, oppLengthDispatch] = useReducer(oppLengthReducer, initialOppLength);
+  const [gameState, gameStateDispatch] = useReducer(mounted ? gameStateReducer: function (){}, initialGameState);
   const cantPlaceOpp = useRef(false);
   const [win, setWinner] = useState(null);
-  /*state determining user connection*/
   const [cannotPlace, setCannotPlace] = useState(false)
-  /*state determining opponeng connection*/
   const [room, setRoom] = useState(null)
   const [oppConnected, setOppConnected] = useState(false);
 
@@ -40,6 +37,7 @@ export default function Game({ navigation, route }) {
   const nav = navigation;
   useEffect(
     function () {
+      mounted.current = true
       socket.current = route.params.s;
       setRoom(route.params.room)
       socket.current.emit('join', route.params.room)
@@ -53,7 +51,7 @@ export default function Game({ navigation, route }) {
         /*displays if hand, deck empty and disconnected*/
         socket.current.disconnect()
         navigation.navigate('home')
-        if (oppConnected ||hand || deck) {
+        if (oppConnected || gameState.hand || gameState.deck) {
           alert('Left game (lost connection or exited)')
         }
       })
@@ -66,18 +64,15 @@ export default function Game({ navigation, route }) {
 
       socket.current.on("disconnection", function stopGame() {
         setOppConnected(false);
-        updateHand([]);
-        oppLengthDispatch({type: 'reset'});
+        gameStateDispatch({type: 'startover'});
         setWinner(null);
         setSides([[], []]);
-        setCannotPlace(false)
         setCannotPlace(false)
         setTops([
           { color: "", number: "", selected: false },
           { color: "", number: "", selected: false },
         ]);
         cantPlaceOpp.current = false;
-        alert("Opponent Disconnected")
       });
       /*resets cant place reference if opponent places card again*/
       socket.current.on("resetplace", function canPlace() {
@@ -93,8 +88,7 @@ export default function Game({ navigation, route }) {
       });
 
       socket.current.on("update-opp", function handOpp(res) {
-        console.log(res)
-        oppLengthDispatch({type: res})
+        gameStateDispatch({type: res})
       });
 
       socket.current.on("tops-change", function tops(res) {
@@ -108,26 +102,29 @@ export default function Game({ navigation, route }) {
       });
 
       socket.current.on("reset", function reset(res) {
-        changeDeck(res);
         setCannotPlace(false)
-        updateHand([]);
         setWinner(null);
+        setSelected(null)
         cantPlaceOpp.current = false;
-        oppLengthDispatch({type: 'reset'})
+        gameStateDispatch({type: 'reset', payload: res})
       });
+      
       return function unMount () {
         socket.current.disconnect()
+        mounted.current = false
       }
     },
     [] /*sideDecks, nav*/
   );
 
-  function placeCard(elements) {
+  function placeCard(elements, selected) {
     socket.current.emit("resetplace", room);
-    socket.current.emit("update-opp", {hand_length: hand.length - 1, room: room, reduce: 'reduce'});
+    socket.current.emit("update-opp", {room: room, reduce: 'reduce'});
     socket.current.emit("place", {elements: elements, room: room});
     setTops(elements)
+    gameStateDispatch({type: 'place', payload: selected})
     setCannotPlace(false)
+    setSelected(null)
   }
 
   function cantPlace() {
@@ -143,61 +140,59 @@ export default function Game({ navigation, route }) {
     }
   }
 
-  const winningString = (winner) => {
-    switch (winner) {
-      case false:
-        return "You Lose!";
-
-      case true:
-        return "You Win!";
-
-      case "tie":
-        return "Tie Game!";
-
-      default:
-        return null;
-    }
-  };
-
   function handleDraw() {
-    if (deck.length === 0 || hand.length === 4 || win !== null) {
+    if (gameState.deck.length === 0 || gameState.hand.length === 4 || win !== null) {
       return;
     }
-    socket.current.emit("update-opp", {hand_length:hand.length + 1, room:room, reduce: 'increase'});
-    var hand_copy = [...hand];
-    var deck_copy = deck;
-    const card = deck_copy[deck_copy.length - 1];
-    const element = {
-      key: card[2],
-      idx: hand_copy.length,
-      color: card[1],
-      number: card[0],
-      selected: false
-    };
-
-    deck_copy = deck_copy.slice(0, -1);
-    hand_copy.push(element);
-    updateHand(hand_copy);
-    changeDeck(deck_copy);
+    socket.current.emit("update-opp", {room:room, reduce: 'increase'});
+    gameStateDispatch({type: 'draw'})
   }
 
-  function oppLengthReducer(state, action) {
-    console.log(action.type)
-    switch (action.type){
+  function gameStateReducer (state, action) {
+    switch (action.type) {
       case 'reduce':
         var newOppLength = [...state.oppLength]
         newOppLength.pop()
-        return {oppLength: newOppLength}
+        return {oppLength: newOppLength, deck: state.deck, hand: state.hand}
       
       case 'increase':
         var newOppLength = [...state.oppLength, 1]
-        return {oppLength: newOppLength}
+        return {oppLength: newOppLength, deck: state.deck, hand: state.hand}
       
       case 'reset':
-        return initialOppLength
+        return {oppLength: [], deck: action.payload, hand: []}
+      
+      case 'startover':
+        return initialGameState
+      
+      case 'draw':
+        var hand_copy = [...state.hand];
+        var deck_copy = [...state.deck];
+        const card = deck_copy[deck_copy.length - 1];
+        const element = {
+          key: card[2],
+          idx: hand_copy.length,
+          color: card[1],
+          number: card[0],
+          selected: false
+        };
+
+        deck_copy = deck_copy.slice(0, -1);
+        hand_copy.push(element);
+        return {oppLength: state.oppLength, hand: hand_copy, deck: deck_copy}
+      
+      case 'place':
+            var hand_copy = [...state.hand];
+            for (var i = action.payload + 1; i < state.hand.length; i++) {
+              hand_copy[i]["idx"] -= 1;
+            }
+
+            hand_copy.splice(action.payload, 1);
+            return {oppLength: state.oppLength, hand: hand_copy, deck: state.deck}
+            
 
       default:
-        throw Error('This is my Error')
+        throw Error('Something Went Wrong')
     }
   }
 
@@ -220,10 +215,10 @@ export default function Game({ navigation, route }) {
       }, [navigation])}
       {/*opponent's hand*/}
       <View>
-        {oppLengthState.oppLength.length !== 0 ? (
+        {gameState.oppLength.length !== 0 ? (
           <FlatList
             style={{marginTop: '3.5vh' }}
-            data={oppLengthState.oppLength}
+            data={gameState.oppLength}
             renderItem={function () {
               return <CardBack/>;
             }}
@@ -253,34 +248,25 @@ export default function Game({ navigation, route }) {
             if (
               selected !== null &&
               win == null &&
-              (hand[selected]["number"] ==
+              (gameState.hand[selected]["number"] ==
                 parseInt(deckTops[0]["number"]) - 1 ||
-                hand[selected]["number"] == deckTops[0]["number"] ||
-                hand[selected]["number"] ==
+                gameState.hand[selected]["number"] == deckTops[0]["number"] ||
+                gameState.hand[selected]["number"] ==
                   parseInt(deckTops[0]["number"]) + 1 ||
                 deckTops[0]["number"] == "" ||
                 (deckTops[0]["number"] == "13" &&
-                  hand[selected]["number"] == "1") ||
+                  gameState.hand[selected]["number"] == "1") ||
                 (deckTops[0]["number"] == "1" &&
-                  hand[selected]["number"] == "13"))
+                  gameState.hand[selected]["number"] == "13"))
             ) {
-              if (hand.length === 1 && deck.length === 0) {
+              if (gameState.hand.length === 1 && gameState.deck.length === 0) {
                 socket.current.emit("winner", room);
-                updateHand([]);
                 return;
               }
-              placeCard([hand[selected], deckTops[1]]);
+              placeCard([gameState.hand[selected], deckTops[1]], selected);
             } else {
               return;
             }
-
-            var hand_copy = hand;
-            for (var i = selected + 1; i < hand.length; i++) {
-              hand_copy[i]["idx"] -= 1;
-            }
-            hand_copy.splice(selected, 1);
-            updateHand(hand_copy);
-            setSelected(null);
           }}
         />
 
@@ -291,34 +277,26 @@ export default function Game({ navigation, route }) {
             if (
               selected !== null &&
               win == null &&
-              (hand[selected]["number"] ==
+              (gameState.hand[selected]["number"] ==
                 parseInt(deckTops[1]["number"]) - 1 ||
-                hand[selected]["number"] == deckTops[1]["number"] ||
-                hand[selected]["number"] ==
+                gameState.hand[selected]["number"] == deckTops[1]["number"] ||
+                gameState.hand[selected]["number"] ==
                   parseInt(deckTops[1]["number"]) + 1 ||
                 deckTops[1]["number"] == "" ||
                 (deckTops[1]["number"] == "13" &&
-                  hand[selected]["number"] == "1") ||
+                  gameState.hand[selected]["number"] == "1") ||
                 (deckTops[1]["number"] == "1" &&
-                  hand[selected]["number"] == "13"))
+                  gameState.hand[selected]["number"] == "13"))
             ) {
-              if (hand.length === 1 && deck.length === 0) {
+              if (gameState.hand.length === 1 && gameState.deck.length === 0) {
                 socket.current.emit("winner", room);
-                updateHand([]);
                 return;
               }
-              placeCard([deckTops[0], hand[selected]]);
+              
+              placeCard([deckTops[0], gameState.hand[selected]], selected);
             } else {
               return;
             }
-            var hand_copy = hand;
-            for (var i = selected + 1; i < hand.length; i++) {
-              hand_copy[i]["idx"] -= 1;
-            }
-
-            hand_copy.splice(selected, 1);
-            updateHand(hand_copy);
-            setSelected(null);
           }}
         />
 
@@ -327,9 +305,9 @@ export default function Game({ navigation, route }) {
       
       {/*current player's hand*/}
       <View style={{ justifyContent: "center", alignItems: "center" }}>
-        {hand.length !== 0 ? (
+        {gameState.hand.length !== 0 ? (
           <FlatList
-            data={hand}
+            data={gameState.hand}
             horizontal={true}
             style = {{marginBottom: '3.5vh', display: 'flex', overflow: 'visible'}}
             renderItem={function ({ item }) {
@@ -341,7 +319,7 @@ export default function Game({ navigation, route }) {
                   selected = {item['selected']}
                   onPress={() => {
                     if (selected !== null) {
-                    hand[selected]['selected'] = false;
+                    gameState.hand[selected]['selected'] = false;
                     }
                     setSelected(item["idx"]);
                     item['selected'] = true
@@ -356,7 +334,7 @@ export default function Game({ navigation, route }) {
         )}
 
         <View style = {{flexDirection: 'row', alignItems: 'center'}}>
-          {deck.length > 0 ? (
+          {gameState.deck.length > 0 ? (
             <View>
               <Deck onPress = {() => {handleDraw()}}/>
             </View>

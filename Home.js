@@ -25,7 +25,7 @@ export default function Home({navigation}) {
             text = 'Create Room'
             onPress={() => {
             /*temporary server link*/
-            const socket = io('https://speed-project-server.herokuapp.com');
+            const socket = io(process.env.REACT_APP_WEBSOCKET_LINK);
             const r = Math.floor(Math.random() * 10).toString();
             socket.emit('create_room', r)
             navigation.navigate('game', {s: socket, room: r})}}
@@ -40,7 +40,7 @@ export default function Home({navigation}) {
             value = {textInput}
             onSubmitEditing = {() => {
                 /*Add Error Handling*/
-                let s = io('https://speed-project-server.herokuapp.com');
+                let s = io(REACT_APP_WEBSOCKET_LINK);
                 const r = textInput;
                 navigation.navigate('game', {s: s, room: r});
             }}

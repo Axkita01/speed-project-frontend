@@ -40,7 +40,7 @@ export default function Home({navigation}) {
             value = {textInput}
             onSubmitEditing = {() => {
                 /*Add Error Handling*/
-                let s = io(REACT_APP_WEBSOCKET_LINK);
+                let s = io(process.env.REACT_APP_WEBSOCKET_LINK);
                 const r = textInput;
                 navigation.navigate('game', {s: s, room: r});
             }}
